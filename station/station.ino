@@ -27,7 +27,7 @@ void loop() {
   digitalWrite(ledPin, LOW);
   Serial.println("********************************");
   Serial.print("Byte sent to the AP: ");
-  Serial.println(client.print("Anyo\r"));
+  Serial.println(client.print("Hello AP\r"));
   String answer = client.readStringUntil('\r');
   Serial.println("From the AP: " + answer);
   client.flush();
