@@ -12,7 +12,7 @@ IPAddress server(192,168,4,15);     // IP address of the AP
 WiFiClient client;
 
 // variables
-String state = "n";
+String state = "";
 
 void setup() {
   Serial.begin(9600);
@@ -34,41 +34,109 @@ void setup() {
 }
 
 void loop() {
-  client.connect(server, 80);
-  digitalWrite(ledPin, LOW);
-  String answer = client.readStringUntil('\r');
-  if (answer != "n") {
-    state = answer;
+  while (state == "") {
+    digitalWrite(leftled, LOW);
+    digitalWrite(rightled, LOW);
+    delay(100);
+    client.connect(server, 80);
+    digitalWrite(ledPin, LOW);
+    String answer = client.readStringUntil('\r');
+    if (answer != "") {
+        state = answer;
+    }
   }
   if (state == "lr") {
-    Serial.print("turning on both left and right leds");
-    digitalWrite(leftled, HIGH);
-    digitalWrite(rightled, HIGH);
-    delay(1000);
-    digitalWrite(leftled, LOW);
-    digitalWrite(rightled, LOW);
-    delay(900);
-  }
-  else if (state == "l") {
-    Serial.print("turning on left leds");
-    digitalWrite(leftled, HIGH);
-    digitalWrite(rightled, LOW);
-    delay(1000);
-    digitalWrite(leftled, LOW);
-    digitalWrite(rightled, LOW);
-    delay(900);
-  }
-  else if (state == "r") {
-    Serial.print("turning on right leds");
-    digitalWrite(leftled, LOW);
-    digitalWrite(rightled, HIGH);
-    delay(1000);
-    digitalWrite(leftled, LOW);
-    digitalWrite(rightled, LOW);
-    delay(900);
+    while (state == "lr") {
+      Serial.print("turning on both left and right leds");
+      digitalWrite(leftled, HIGH);
+      digitalWrite(rightled, HIGH);
+      delay(600);
+      digitalWrite(leftled, LOW);
+      digitalWrite(rightled, LOW);
+      delay(600);
+      String answer = client.readStringUntil('\r');
+      if (answer != "") {
+        state = answer;
+      } else if (answer == state) {
+        state = "";
+      }
+    } 
+  } else if (state == "l") {
+    while (state == "l") {
+      Serial.print("turning on left leds");
+      digitalWrite(leftled, HIGH);
+      digitalWrite(rightled, LOW);
+      delay(600);
+      digitalWrite(leftled, LOW);
+      digitalWrite(rightled, LOW);
+      delay(600);
+      String answer = client.readStringUntil('\r');
+      if (answer != "") {
+        state = answer;
+      } else if (answer == state) {
+        state = "";
+      }
+    }
+  } else if (state == "r") {
+    while (state == "r") {
+      Serial.print("turning on right leds");
+      digitalWrite(leftled, LOW);
+      digitalWrite(rightled, HIGH);
+      delay(600);
+      digitalWrite(leftled, LOW);
+      digitalWrite(rightled, LOW);
+      delay(600);
+      String answer = client.readStringUntil('\r');
+      if (answer != "") {
+        state = answer;
+      } else if (answer == state) {
+        state = "";
+      }
+    }
   }
   client.flush();
   digitalWrite(ledPin, HIGH);
   client.stop();
   delay(100);
 }
+
+  
+//  client.connect(server, 80);
+//  digitalWrite(ledPin, LOW);
+//  String answer = client.readStringUntil('\r');
+//  if (answer != "");
+//  if (answer != "n") {
+//    state = answer;
+//  }
+//  if (state == "lr") {
+//    Serial.print("turning on both left and right leds");
+//    digitalWrite(leftled, HIGH);
+//    digitalWrite(rightled, HIGH);
+//    delay(1000);
+//    digitalWrite(leftled, LOW);
+//    digitalWrite(rightled, LOW);
+//    delay(900);
+//  }
+//  else if (state == "l") {
+//    Serial.print("turning on left leds");
+//    digitalWrite(leftled, HIGH);
+//    digitalWrite(rightled, LOW);
+//    delay(1000);
+//    digitalWrite(leftled, LOW);
+//    digitalWrite(rightled, LOW);
+//    delay(900);
+//  }
+//  else if (state == "r") {
+//    Serial.print("turning on right leds");
+//    digitalWrite(leftled, LOW);
+//    digitalWrite(rightled, HIGH);
+//    delay(1000);
+//    digitalWrite(leftled, LOW);
+//    digitalWrite(rightled, LOW);
+//    delay(900);
+//  }
+//  client.flush();
+//  digitalWrite(ledPin, HIGH);
+//  client.stop();
+//  delay(100);
+//}
